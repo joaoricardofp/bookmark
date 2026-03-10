@@ -2,72 +2,74 @@ import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema
-    .createTable('collection', (table) => {
+    .createTable('collections', (table) => {
       table.string('id').primary().defaultTo(knex.fn.uuid()).notNullable();
-      table.string('userId').notNullable();
+      table.string('user_id').notNullable();
 
       table.string('name').notNullable();
       table.string('slug').notNullable();
 
-      table.boolean('isPublic').defaultTo(false).notNullable();
-
+      table.boolean('is_public').defaultTo(false).notNullable();
       table.integer('order').defaultTo(0).notNullable();
 
-      table.timestamp('createdAt').defaultTo(knex.fn.now()).notNullable();
-      table.timestamp('updatedAt').defaultTo(knex.fn.now()).notNullable();
+      table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
+      table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable();
 
-      table.foreign('userId').references('id').inTable('user');
-
-      table.unique(['userId', 'slug']);
+      table.foreign('user_id').references('id').inTable('user').onDelete('CASCADE');
+      table.unique(['user_id', 'slug']);
     })
-    .createTable('bookmark', (table) => {
+    .createTable('bookmarks', (table) => {
       table.string('id').primary().defaultTo(knex.fn.uuid()).notNullable();
-      table.string('userId').notNullable();
-      table.string('collectionId').notNullable();
+      table.string('user_id').notNullable();
+      table
+        .string('collection_id')
+        .references('id')
+        .inTable('collections')
+        .onDelete('SET NULL')
+        .nullable();
 
-      table.text('text').notNullable();
+      table.text('title').notNullable();
       table.string('url').notNullable();
+      table.text('description').nullable();
+      table.string('favicon').nullable();
+      table.string('og_image').nullable();
 
-      table.text('description');
+      table.boolean('is_favorite').defaultTo(false).notNullable();
+      table.boolean('is_public').defaultTo(false).notNullable();
 
-      table.boolean('isFavorite').defaultTo(false).notNullable();
-      table.boolean('isPublic').defaultTo(false).notNullable();
-
-      table.integer('clickCount').defaultTo(0).notNullable();
+      table.integer('click_count').defaultTo(0).notNullable();
       table.integer('order').defaultTo(0).notNullable();
 
-      table.foreign('userId').references('id').inTable('user');
-      table.foreign('collectionId').references('id').inTable('collection');
+      table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
+      table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable();
 
-      table.timestamp('createdAt').defaultTo(knex.fn.now()).notNullable();
-      table.timestamp('updatedAt').defaultTo(knex.fn.now()).notNullable();
+      table.foreign('user_id').references('id').inTable('user').onDelete('CASCADE');
     })
-    .createTable('tag', (table) => {
+    .createTable('tags', (table) => {
       table.string('id').primary().defaultTo(knex.fn.uuid()).notNullable();
-      table.string('userId').notNullable();
+      table.string('user_id').notNullable();
 
       table.string('name').notNullable();
       table.string('color').defaultTo('#6366f1').notNullable();
 
-      table.foreign('userId').references('id').inTable('user');
-
-      table.unique(['userId', 'name']);
+      table.foreign('user_id').references('id').inTable('user').onDelete('CASCADE');
+      table.unique(['user_id', 'name']);
     })
-    .createTable('bookmarkTag', (table) => {
-      table.string('bookmarkId').notNullable();
-      table.string('tagId').notNullable();
+    .createTable('bookmark_tags', (table) => {
+      table.string('bookmark_id').notNullable();
+      table.string('tag_id').notNullable();
 
-      table.foreign('bookmarkId').references('id').inTable('bookmark');
-      table.foreign('tagId').references('id').inTable('tag');
+      table.foreign('bookmark_id').references('id').inTable('bookmarks').onDelete('CASCADE');
+      table.foreign('tag_id').references('id').inTable('tags').onDelete('CASCADE');
 
-      table.primary(['bookmarkId', 'tagId']);
+      table.primary(['bookmark_id', 'tag_id']);
     });
 }
 
 export async function down(knex: Knex): Promise<void> {
   await knex.schema
-    .dropTableIfExists('bookmarkTag')
-    .dropTableIfExists('bookmark')
-    .dropTableIfExists('tag')
-    .dropTableIfExists('collection');
+    .dropTableIfExists('bookmark_tags')
+    .dropTableIfExists('bookmarks')
+    .dropTableIfExists('tags')
+    .dropTableIfExists('collections');
 }
