@@ -1,34 +1,42 @@
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import { BookmarkList } from '@/components/bookmark/bookmark-list';
 import { BookmarkForm } from '@/components/bookmark/bookmark-form';
 import { Bookmark } from '@/types/bookmark';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Collection } from '@/types/collection';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { Heading } from '@/components/ui/typography';
 
-export default async function DashboardPage() {
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export default async function CollectionPage({ params }: Props) {
+  const { slug } = await params;
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
+  if (!session) redirect('/login');
+
+  const collection = await db('collections')
+    .where({ user_id: session.user.id, slug })
+    .first() as Collection | undefined;
+
+  if (!collection) notFound();
+
   const bookmarks = await db('bookmarks')
-    .where({ user_id: session?.user.id })
+    .where({ user_id: session.user.id, collection_id: collection.id })
     .orderBy('order', 'asc') as Bookmark[];
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <Heading>My Bookmarks</Heading>
+        <h1 className="text-2xl font-semibold">{collection.name}</h1>
 
         <Dialog>
           <DialogTrigger asChild>
@@ -41,7 +49,7 @@ export default async function DashboardPage() {
             <DialogHeader>
               <DialogTitle>Add bookmark</DialogTitle>
             </DialogHeader>
-            <BookmarkForm />
+            <BookmarkForm collectionId={collection.id} />
           </DialogContent>
         </Dialog>
       </div>

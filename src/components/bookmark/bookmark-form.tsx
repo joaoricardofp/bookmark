@@ -22,10 +22,11 @@ type FormData = z.infer<typeof schema>;
 
 type Props = {
   bookmark?: Bookmark;
+  collectionId?: string;
   onSuccess?: () => void;
 };
 
-export function BookmarkForm({ bookmark, onSuccess }: Props) {
+export function BookmarkForm({ bookmark, collectionId, onSuccess }: Props) {
   const [isPending, startTransition] = useTransition();
   const isEditing = !!bookmark;
 
@@ -45,7 +46,7 @@ export function BookmarkForm({ bookmark, onSuccess }: Props) {
           await updateBookmark({ id: bookmark.id, ...data });
           gooeyToast.success('Bookmark updated');
         } else {
-          await createBookmark(data);
+          await createBookmark({ ...data, collectionId });
           gooeyToast.success('Bookmark created');
         }
         form.reset();
