@@ -43,21 +43,24 @@ export async function createBookmark(input: CreateInput) {
   const user = await getSession();
   const data = createSchema.parse(input);
 
-  const maxOrder = await db('bookmark').where({ userId: user.id }).max('order as max').first();
+  const maxOrder = await db('bookmarks')
+    .where({ user_id: user.id })
+    .max('order as max')
+    .first();
 
   const nextOrder = (maxOrder?.max ?? -1) + 1;
 
-  const [bookmark] = await db('bookmark')
+  const [bookmark] = await db('bookmarks')
     .insert({
-      userId: user.id,
+      user_id: user.id,
       title: data.title,
       url: data.url,
-      description: data.description,
-      collectionId: data.collectionId,
-      isFavorite: data.isFavorite,
-      isPublic: data.isPublic,
-      ogImage: data.ogImage,
-      favicon: data.favicon,
+      description: data.description ?? null,
+      collection_id: data.collectionId ?? null,
+      is_favorite: data.isFavorite,
+      is_public: data.isPublic,
+      og_image: data.ogImage ?? null,
+      favicon: data.favicon ?? null,
       order: nextOrder,
     })
     .returning('*');
@@ -71,58 +74,56 @@ export async function updateBookmark(input: UpdateInput) {
   const user = await getSession();
   const { id, ...rest } = updateSchema.parse(input);
 
-  const existing = await db('bookmark').where({ id, userId: user.id }).first();
+  const existing = await db('bookmarks').where({ id, user_id: user.id }).first();
 
   if (!existing) throw new Error('Bookmark not found');
 
-  const [update] = await db('bookmark')
-    .where({ id, userId: user.id })
+  const [updated] = await db('bookmarks')
+    .where({ id, user_id: user.id })
     .update({
-      ...(rest.title && { title: rest.title }),
-      ...(rest.url && { url: rest.url }),
-      ...(rest.description && { description: rest.description }),
-      ...(rest.collectionId && { collectionId: rest.collectionId }),
-      ...(rest.isFavorite && { isFavorite: rest.isFavorite }),
-      ...(rest.isPublic && { isPublic: rest.isPublic }),
-      ...(rest.ogImage && { ogImage: rest.ogImage }),
-      ...(rest.favicon && { favicon: rest.favicon }),
+      ...(rest.title !== undefined && { title: rest.title }),
+      ...(rest.url !== undefined && { url: rest.url }),
+      ...(rest.description !== undefined && { description: rest.description }),
+      ...(rest.collectionId !== undefined && { collection_id: rest.collectionId }),
+      ...(rest.isFavorite !== undefined && { is_favorite: rest.isFavorite }),
+      ...(rest.isPublic !== undefined && { is_public: rest.isPublic }),
+      ...(rest.ogImage !== undefined && { og_image: rest.ogImage }),
+      ...(rest.favicon !== undefined && { favicon: rest.favicon }),
     })
     .returning('*');
 
-  revalidatePath('/dashbard');
+  revalidatePath('/dashboard');
 
-  return update;
+  return updated;
 }
 
 export async function deleteBookmark(id: string) {
   const user = await getSession();
 
-  const existing = await db('bookmark').where({ id, userId: user.id }).first();
+  const existing = await db('bookmarks').where({ id, user_id: user.id }).first();
 
   if (!existing) throw new Error('Bookmark not found');
 
-  await db('bookmark').where({ id, userId: user.id }).delete();
+  await db('bookmarks').where({ id, user_id: user.id }).delete();
 
   revalidatePath('/dashboard');
 }
 
-export async function toogleFavorite(id: string) {
+export async function toggleFavorite(id: string) {
   const user = await getSession();
 
-  const existing = await db('bookmark').where({ id, userId: user.id }).first();
+  const existing = await db('bookmarks').where({ id, user_id: user.id }).first();
 
   if (!existing) throw new Error('Bookmark not found');
 
-  const [update] = await db('bookmark')
-    .where({ id, userId: user.id })
-    .update({
-      isFavorite: !existing.isFavorite,
-    })
+  const [updated] = await db('bookmarks')
+    .where({ id, user_id: user.id })
+    .update({ is_favorite: !existing.is_favorite })
     .returning('*');
 
   revalidatePath('/dashboard');
 
-  return update;
+  return updated;
 }
 
 export async function reorderBookmarks(input: ReorderInput) {
@@ -132,7 +133,7 @@ export async function reorderBookmarks(input: ReorderInput) {
   await db.transaction(async (trx) => {
     await Promise.all(
       ids.map((id, index) =>
-        trx('bookmark').where({ id, userId: user.id }).update({ order: index })
+        trx('bookmarks').where({ id, user_id: user.id }).update({ order: index })
       )
     );
   });
