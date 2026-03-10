@@ -1,3 +1,5 @@
+import { Tag } from './tag';
+
 export type Bookmark = {
   id: string;
   user_id: string;
@@ -13,4 +15,5 @@ export type Bookmark = {
   order: number;
   created_at: string;
   updated_at: string;
+  tags?: Tag[];
 };

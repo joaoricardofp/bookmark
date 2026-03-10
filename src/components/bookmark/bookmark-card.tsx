@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Star, Trash2, Pencil, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from '../ui/typography';
+import { TagBadge } from '../tag/tag-badge';
 
 type Props = {
   bookmark: Bookmark;
@@ -30,6 +31,14 @@ export function BookmarkCard({ bookmark, onEdit }: Props) {
 
           {bookmark.description && (
             <p className="mt-1 truncate text-sm text-muted-foreground">{bookmark.description}</p>
+          )}
+
+          {bookmark.tags && bookmark.tags.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1">
+              {bookmark.tags.map((tag) => (
+                <TagBadge key={tag.id} tag={tag} />
+              ))}
+            </div>
           )}
 
           <p className="mt-1 truncate text-xs text-muted-foreground">{bookmark.url}</p>

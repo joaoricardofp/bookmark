@@ -5,8 +5,14 @@ import { Collection } from '@/types/collection';
 import { deleteCollection } from '@/actions/collection';
 import { CollectionForm } from './collection-form';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Pencil, Trash2, Plus, FolderOpen } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Pencil, Trash2, Plus, FolderOpen, Star, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -61,6 +67,28 @@ export function CollectionSidebar({ collections }: Props) {
         All bookmarks
       </Link>
 
+      <Link
+        href="/dashboard/favorites"
+        className={cn(
+          'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted',
+          pathname === '/dashboard/favorites' && 'bg-muted font-medium'
+        )}
+      >
+        <Star className="size-3.5 text-muted-foreground" />
+        Favorites
+      </Link>
+
+      <Link
+        href="/dashboard/tags"
+        className={cn(
+          'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted',
+          pathname === '/dashboard/tags' && 'bg-muted font-medium'
+        )}
+      >
+        <Tag className="size-3.5 text-muted-foreground" />
+        Tags
+      </Link>
+
       {collections.map((collection) => (
         <div
           key={collection.id}
@@ -108,12 +136,7 @@ export function CollectionSidebar({ collections }: Props) {
           <DialogHeader>
             <DialogTitle>Edit collection</DialogTitle>
           </DialogHeader>
-          {editing && (
-            <CollectionForm
-              collection={editing}
-              onSuccess={() => setEditing(null)}
-            />
-          )}
+          {editing && <CollectionForm collection={editing} onSuccess={() => setEditing(null)} />}
         </DialogContent>
       </Dialog>
     </aside>
