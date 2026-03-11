@@ -1,3 +1,5 @@
+'use client';
+
 import { Heading, Link, Text } from '@/components/ui/typography';
 import { GalleryVerticalEndIcon } from 'lucide-react';
 import { Suspense } from 'react';
