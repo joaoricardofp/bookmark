@@ -15,8 +15,13 @@ const updateSchema = createSchema.partial().extend({
   id: z.uuid(),
 });
 
+const reorderSchema = z.object({
+  ids: z.array(z.string()),
+});
+
 type CreateInput = z.infer<typeof createSchema>;
 type UpdateInput = z.infer<typeof updateSchema>;
+type ReorderInput = z.infer<typeof reorderSchema>;
 
 async function getSession() {
   const session = await auth.api.getSession({
@@ -105,6 +110,21 @@ export async function deleteCollection(id: string) {
   if (!existing) throw new Error('Collection not found');
 
   await db('collections').where({ id, user_id: user.id }).delete();
+
+  revalidatePath('/dashboard');
+}
+
+export async function reorderCollections(input: ReorderInput) {
+  const user = await getSession();
+  const { ids } = reorderSchema.parse(input);
+
+  await db.transaction(async (trx) => {
+    await Promise.all(
+      ids.map((id, index) =>
+        trx('collections').where({ id, user_id: user.id }).update({ order: index })
+      )
+    );
+  });
 
   revalidatePath('/dashboard');
 }
