@@ -1,5 +1,6 @@
 import { Heading, Link, Text } from '@/components/ui/typography';
 import { GalleryVerticalEndIcon } from 'lucide-react';
+import { Suspense } from 'react';
 
 export default function AuthLayout({
   children,
@@ -24,7 +25,9 @@ export default function AuthLayout({
             <Heading>{title}</Heading>
             <Text variant="muted">{description}</Text>
           </div>
-          {children}
+          <Suspense>
+            {children}
+          </Suspense>
         </div>
       </div>
     </div>
