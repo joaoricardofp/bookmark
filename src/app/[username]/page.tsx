@@ -24,9 +24,7 @@ export default async function PublicProfilePage({ params }: Props) {
     onlyPublic: true,
   });
 
-  const publicCollectionIds = [
-    ...new Set(bookmarks.map((b) => b.collection_id).filter(Boolean)),
-  ];
+  const publicCollectionIds = [...new Set(bookmarks.map((b) => b.collection_id).filter(Boolean))];
 
   const collections =
     publicCollectionIds.length > 0
@@ -55,14 +53,15 @@ export default async function PublicProfilePage({ params }: Props) {
       {bookmarks.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
           <Text variant="lead">No public bookmarks yet</Text>
+          <Text variant="muted" className="mt-1">
+            This user hasn't shared any bookmarks yet.
+          </Text>
         </div>
       )}
 
       {/* Coleções públicas */}
       {collections.map((collection) => {
-        const collectionBookmarks = bookmarks.filter(
-          (b) => b.collection_id === collection.id
-        );
+        const collectionBookmarks = bookmarks.filter((b) => b.collection_id === collection.id);
         if (collectionBookmarks.length === 0) return null;
 
         return (
@@ -70,9 +69,7 @@ export default async function PublicProfilePage({ params }: Props) {
             <div className="mb-4 flex items-center gap-2">
               <FolderOpen className="size-4 text-muted-foreground" />
               <h2 className="font-semibold">{collection.name}</h2>
-              <span className="text-xs text-muted-foreground">
-                {collectionBookmarks.length}
-              </span>
+              <span className="text-xs text-muted-foreground">{collectionBookmarks.length}</span>
             </div>
             <div className="flex flex-col gap-3">
               {collectionBookmarks.map((bookmark) => (
@@ -89,9 +86,7 @@ export default async function PublicProfilePage({ params }: Props) {
           {collections.length > 0 && (
             <div className="mb-4 flex items-center gap-2">
               <h2 className="font-semibold text-muted-foreground">Others</h2>
-              <span className="text-xs text-muted-foreground">
-                {uncategorized.length}
-              </span>
+              <span className="text-xs text-muted-foreground">{uncategorized.length}</span>
             </div>
           )}
           <div className="flex flex-col gap-3">
@@ -113,11 +108,7 @@ function PublicBookmarkCard({ bookmark }: { bookmark: Bookmark }) {
       className="group flex items-start gap-3 rounded-lg border bg-card p-4 shadow-sm transition-colors hover:bg-muted/50 no-underline"
     >
       {bookmark.favicon ? (
-        <img
-          src={bookmark.favicon}
-          alt=""
-          className="mt-0.5 size-4 shrink-0 rounded-sm"
-        />
+        <img src={bookmark.favicon} alt="" className="mt-0.5 size-4 shrink-0 rounded-sm" />
       ) : (
         <div className="mt-0.5 size-4 shrink-0 rounded-sm bg-muted" />
       )}
