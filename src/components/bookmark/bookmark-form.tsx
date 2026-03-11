@@ -17,11 +17,13 @@ import { TagBadge } from '@/components/tag/tag-badge';
 import { cn } from '@/lib/utils';
 import { Plus, X, Loader2 } from 'lucide-react';
 import { OgData } from '@/lib/og';
+import { Switch } from '../ui/switch';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required').max(255),
   url: z.url('Invalid URL'),
   description: z.string().max(500).optional(),
+  isPublic: z.boolean().default(false),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -66,6 +68,7 @@ export function BookmarkForm({ bookmark, collectionId, tags = [], onSuccess }: P
       title: bookmark?.title ?? '',
       url: bookmark?.url ?? '',
       description: bookmark?.description ?? '',
+      isPublic: bookmark?.is_public ?? false,
     },
   });
 
@@ -299,6 +302,24 @@ export function BookmarkForm({ bookmark, collectionId, tags = [], onSuccess }: P
             )}
           </div>
         </Field>
+
+        <Controller
+          name="isPublic"
+          control={form.control}
+          render={({ field }) => (
+            <Field>
+              <div className="flex items-center justify-between">
+                <div>
+                  <FieldLabel htmlFor="isPublic">Public</FieldLabel>
+                  <p className="text-xs text-muted-foreground">
+                    Visible on your public profile page
+                  </p>
+                </div>
+                <Switch id="isPublic" checked={field.value} onCheckedChange={field.onChange} />
+              </div>
+            </Field>
+          )}
+        />
 
         <Field>
           <Button type="submit" disabled={isPending}>

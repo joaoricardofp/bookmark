@@ -6,15 +6,17 @@ type Options = {
   userId: string;
   collectionId?: string;
   onlyFavorites?: boolean;
+  onlyPublic?: boolean; // ← adiciona
 };
 
 export async function getBookmarksWithTags(options: Options): Promise<Bookmark[]> {
-  const { userId, collectionId, onlyFavorites } = options;
+  const { userId, collectionId, onlyFavorites, onlyPublic } = options;
 
   let query = db('bookmarks').where({ user_id: userId });
 
   if (collectionId) query = query.where({ collection_id: collectionId });
   if (onlyFavorites) query = query.where({ is_favorite: true });
+  if (onlyPublic) query = query.where({ is_public: true }); // ← adiciona
 
   const bookmarks = await query.orderBy('order', 'asc');
 
