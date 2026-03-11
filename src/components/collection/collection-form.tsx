@@ -15,7 +15,7 @@ import { Switch } from '../ui/switch';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required').max(255),
-  isPublic: z.boolean().default(false),
+  isPublic: z.boolean(),
 });
 
 type FormData = z.infer<typeof schema>;
