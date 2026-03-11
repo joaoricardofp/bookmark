@@ -13,10 +13,7 @@ import { Spinner } from '@/components/ui/spinner';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
-  color: z
-    .string()
-    .regex(/^#[0-9a-fA-F]{6}$/, 'Invalid color')
-    .default('#6366f1'),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Invalid color'),
 });
 
 type FormData = z.infer<typeof schema>;
