@@ -109,6 +109,7 @@ export function BookmarkForm({ bookmark, collectionId, tags = [], onSuccess }: P
           const created = await createBookmark({
             ...data,
             collectionId,
+            isFavorite: false,
             ogImage: ogData?.ogImage ?? undefined,
             favicon: ogData?.favicon ?? undefined,
           });
