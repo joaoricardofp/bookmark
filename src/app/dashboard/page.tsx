@@ -1,10 +1,8 @@
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { BookmarkList } from '@/components/bookmark/bookmark-list';
 import { BookmarkForm } from '@/components/bookmark/bookmark-form';
-import { Bookmark } from '@/types/bookmark';
 import {
   Dialog,
   DialogContent,
@@ -17,6 +15,11 @@ import { Plus } from 'lucide-react';
 import { Heading } from '@/components/ui/typography';
 import { Tag } from '@/types/tag';
 import { getBookmarksWithTags } from '@/lib/bookmarks';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({

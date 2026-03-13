@@ -7,10 +7,22 @@ import { Tag } from '@/types/tag';
 import { TagBadge } from '@/components/tag/tag-badge';
 import { ExternalLink, FolderOpen } from 'lucide-react';
 import { Heading, Link, Text } from '@/components/ui/typography';
+import { Metadata } from 'next';
 
 type Props = {
   params: Promise<{ username: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { username } = await params;
+  const user = await db('user').where({ name: username }).first();
+
+  if (!user) return { title: 'Profile not found' };
+
+  return {
+    title: user.name,
+  };
+}
 
 export default async function PublicProfilePage({ params }: Props) {
   const { username } = await params;

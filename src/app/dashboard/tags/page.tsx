@@ -15,6 +15,11 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Tags',
+};
 
 export default async function TagsPage() {
   const session = await auth.api.getSession({

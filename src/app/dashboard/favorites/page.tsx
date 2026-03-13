@@ -6,6 +6,11 @@ import { BookmarkList } from '@/components/bookmark/bookmark-list';
 import { getBookmarksWithTags } from '@/lib/bookmarks';
 import { Tag } from '@/types/tag';
 import { Heading } from '@/components/ui/typography';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Favorites',
+};
 
 export default async function FavoritesPage() {
   const session = await auth.api.getSession({

@@ -17,6 +17,11 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Tag } from '@/types/tag';
 import { getBookmarksWithTags } from '@/lib/bookmarks';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Collections',
+};
 
 type Props = {
   params: Promise<{ slug: string }>;
