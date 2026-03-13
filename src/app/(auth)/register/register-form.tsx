@@ -11,6 +11,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTransition } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import z from 'zod';
+import { InputPassword } from '@/components/ui/input-password';
 
 const schema = z.object({
   name: z.string().min(3).max(100),
@@ -39,7 +40,9 @@ export function RegisterForm() {
         callbackURL: '/dashboard',
         fetchOptions: {
           query: params ? Object.fromEntries(params.entries()) : undefined,
-          onError: (ctx) => { gooeyToast.error(ctx.error.message); },
+          onError: (ctx) => {
+            gooeyToast.error(ctx.error.message);
+          },
           onSuccess: () => {
             gooeyToast.success('Successfully signed up');
             router.push('/dashboard');
@@ -58,7 +61,13 @@ export function RegisterForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="name">Name</FieldLabel>
-              <Input {...field} id="name" type="text" placeholder="Name" aria-invalid={fieldState.invalid} />
+              <Input
+                {...field}
+                id="name"
+                type="text"
+                placeholder="Name"
+                aria-invalid={fieldState.invalid}
+              />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -70,7 +79,13 @@ export function RegisterForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input {...field} id="email" type="email" placeholder="you@example.com" aria-invalid={fieldState.invalid} />
+              <Input
+                {...field}
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                aria-invalid={fieldState.invalid}
+              />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -82,7 +97,7 @@ export function RegisterForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input {...field} id="password" type="password" placeholder="Password" aria-invalid={fieldState.invalid} />
+              <InputPassword {...field} placeholder="Password" aria-invalid={fieldState.invalid} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

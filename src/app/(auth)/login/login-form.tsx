@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { InputPassword } from '@/components/ui/input-password';
 import { Spinner } from '@/components/ui/spinner';
 import { authClient } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -78,13 +79,7 @@ export function LoginForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input
-                {...field}
-                id="password"
-                type="password"
-                placeholder="Password"
-                aria-invalid={fieldState.invalid}
-              />
+              <InputPassword {...field} placeholder="Password" aria-invalid={fieldState.invalid} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
