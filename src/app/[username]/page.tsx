@@ -39,7 +39,6 @@ export default async function PublicProfilePage({ params }: Props) {
     <div className="mx-auto max-w-2xl px-4 py-16">
       {/* Header */}
       <div className="mb-12 text-center">
-        <Heading>{user.name}</Heading>
         {user.image && (
           <img
             src={user.image}
@@ -47,6 +46,9 @@ export default async function PublicProfilePage({ params }: Props) {
             className="mx-auto mb-4 size-16 rounded-full object-cover"
           />
         )}
+
+        <Heading>{user.name}</Heading>
+
         <Text variant="muted">{bookmarks.length} public bookmarks</Text>
       </div>
 
@@ -103,7 +105,7 @@ export default async function PublicProfilePage({ params }: Props) {
 function PublicBookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   return (
     <Link
-      href={`/api/bookmarks/click/${bookmark.id}?redirect=${encodeURIComponent(bookmark.url)}`}
+      href={bookmark.url}
       target="_blank"
       className="group flex items-start gap-3 rounded-lg border bg-card p-4 shadow-sm transition-colors hover:bg-muted/50 no-underline"
     >
