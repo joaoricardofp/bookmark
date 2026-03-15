@@ -19,12 +19,12 @@ export default function HomePage() {
 
       <div className="flex items-center gap-3">
         <Button asChild>
-          <Link href="/register" className="no-underline">
+          <Link href="/register" className="text-secondary-foreground no-underline hover:text-secondary-foreground">
             Get started
           </Link>
         </Button>
         <Button variant="outline" asChild>
-          <Link href="/login" className="no-underline">
+          <Link href="/login" className="text-secondary-foreground no-underline">
             Sign in
           </Link>
         </Button>
