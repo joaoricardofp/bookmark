@@ -1,72 +1,79 @@
-# Next.js Authentication Starter
+# Bookmark
 
-A simple Next.js starter template that provides a basic authentication setup using Better Auth. It is intended to be used as a starter or template for new projects.
-
-![Login Page](https://assets.jrfp.dev/nextjs-starter/login-page.png)
-
-![Register Page](https://assets.jrfp.dev/nextjs-starter/register-page.png)
-
-## Tech Stack
-
-- **Framework:** Next.js (App Router)
-- **Authentication:** Better Auth
-- **Database:** PostgreSQL (pg)
-- **Styling:** Tailwind CSS, shadcn/ui
-- **Forms & Validation:** React Hook Form, Zod
-- **Email:** Resend
+A personal bookmark manager built with Next.js. Save, organize and share your links publicly via a `/{username}` profile page.
 
 ## Features
 
-- Email and password authentication
-- GitHub OAuth authentication
-- Login page
-- Register page
-- Protected dashboard page
-- Session validation
+- Save bookmarks with automatic OG preview (title, description, image)
+- Organize with **collections** and **tags**
+- Mark bookmarks as **favorites**
+- Drag-and-drop **reordering**
+- **Click counter** per bookmark
+- Public `/{username}` profile page to share your links
+- Email/password and GitHub OAuth authentication
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Auth:** Better Auth
+- **Database:** PostgreSQL via Knex.js
+- **Styling:** Tailwind CSS + shadcn/ui
+- **Forms & Validation:** React Hook Form + Zod
+- **Drag and Drop:** @dnd-kit
+- **Email:** Resend
 
 ## Getting Started
 
-First, clone the repository and install the dependencies:
+**1. Install dependencies**
 
 ```bash
 npm install
 ```
 
-## Environment Variables
+**2. Set up environment variables**
 
-Create a `.env` file in the root directory and add the following variables:
+Copy `.env.example` to `.env` and fill in the values:
 
 ```env
 BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=
+BETTER_AUTH_URL=http://localhost:3000
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
 DATABASE_URL=
 RESEND_API_KEY=
 ```
 
-## Running the Development Server
+**3. Run database migrations**
 
-Start the development server:
+```bash
+npx knex migrate:latest
+```
+
+**4. Start the development server**
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 
-```text
-.
-├── src/
-│   ├── app/                 # Next.js App Router
-│   │   ├── (auth)/          # Authentication pages
-│   │   ├── api/             # API routes
-│   │   └── dashboard/       # Protected dashboard pages
-│   ├── components/          # Reusable UI components
-│   ├── layout/              # Layout definitions
-│   └── lib/                 # Core utilities and auth configuration
-├── public/                  # Static assets
-└── package.json             # Project dependencies and scripts
 ```
+src/
+├── app/
+│   ├── (auth)/       # Login and register pages
+│   ├── dashboard/    # Protected dashboard
+│   ├── [username]/   # Public profile page
+│   └── api/          # Public API routes
+├── actions/          # Server Actions (authenticated mutations)
+├── components/       # UI components (bookmark, collection, tag)
+├── db/
+│   └── migrations/   # Knex migrations
+├── lib/              # Auth, DB client, OG fetcher, utilities
+└── types/            # Shared TypeScript types
+```
+
+## License
+
+[MIT](LICENSE)
