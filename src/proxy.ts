@@ -1,3 +1,4 @@
+import { getSessionCookie } from "better-auth/cookies";
 import { NextRequest, NextResponse } from 'next/server';
 
 const PROTECTED = ['/dashboard'];
@@ -9,7 +10,7 @@ export function proxy(req: NextRequest) {
   // blinda rotas protegidas — redireciona para login se não autenticado
   const isProtected = PROTECTED.some((path) => pathname.startsWith(path));
   if (isProtected) {
-    const cookie = req.cookies.get('better-auth.session_token');
+    const cookie = getSessionCookie(req);
     if (!cookie) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
